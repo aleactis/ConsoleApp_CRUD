@@ -56,7 +56,7 @@ namespace ConsoleAppSQLite
                         int linhas = cmd.ExecuteNonQuery();
                         Console.WriteLine(linhas + " linha(s) afetada(s)");
                     }
-                    //Demonstração de update
+                    //Demonstração de Update
                     string numero = "666";
                     Console.WriteLine("Atualizando o logradouro do número " + numero + ", pressione qualquer tecla para continuar...");
                     Console.ReadKey(true);
