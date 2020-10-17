@@ -69,7 +69,7 @@ namespace ConsoleAppSQLite
                         int linhas = cmd.ExecuteNonQuery();
                         Console.WriteLine(linhas + " linha(s) afetada(s)");
                     }
-                    //Demonstração de delete
+                    //Demonstração de Delete
                     numero = "77";
                     Console.WriteLine("Excluindo o logradouro do número " + numero + ", pressione qualquer tecla para continuar");
                     Console.ReadKey(true);
