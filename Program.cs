@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Data.SQLite;
 using System.Text;
+using System.Data;
 
 namespace ConsoleAppSQLite
 {
@@ -19,12 +20,10 @@ namespace ConsoleAppSQLite
                 Console.WriteLine("Conectando-se ao SQLite...");
                 using (SQLiteConnection con = new SQLiteConnection(sb.ConnectionString))
                 {
-                    //Abrindo a conexão
-                    con.Open();
-                    Console.WriteLine("Conexão aberta!");
                     //Criando uma tabela e inserindo alguns registros
-                     Console.Write("Criando tabela, pressione qualquer tecla para continuar...");
-                     Console.ReadKey(true);
+                    Console.WriteLine("Criando tabela, pressione qualquer tecla para continuar...");
+                    //Aguardando ação do usuário
+                    Console.ReadKey(true);
                     StringBuilder builder = new StringBuilder();
                     //builder.Append("USE senac.db;");
                     builder.Append("CREATE TABLE endereco ( ");
@@ -37,13 +36,21 @@ namespace ConsoleAppSQLite
                     builder.Append("('Rua Tereza P. Padovez', '77'), ");
                     builder.Append("('Rua Treze de Maio', '666'); ");
                     string sql = builder.ToString();
-                    using (SQLiteCommand cmd = new SQLiteCommand(sql,con) )
+                    using (SQLiteCommand cmd = new SQLiteCommand(sql, con) )
                     {
+                        //Abrindo a conexão
+                        con.Open();
+                        Console.WriteLine("Conexão aberta!");
+                        //Executando o SQL
                         cmd.ExecuteNonQuery();
                         Console.WriteLine("Tabela criada!");
+                        //Fechando a conexão
+                        con.Close();
+                        Console.WriteLine("Conexão fechada!");
                     }
                     //Demonstração de insert
-                    Console.Write("Inserindo uma nova linha na tabela, pressione qualquer tecla para continuar...");
+                    Console.WriteLine("Inserindo uma nova linha na tabela, pressione qualquer tecla para continuar...");
+                    //Aguardando ação do usuário
                     Console.ReadKey(true);
                     builder.Clear();
                     builder.Append("INSERT INTO endereco (logradouro, numero) ");
@@ -51,13 +58,23 @@ namespace ConsoleAppSQLite
                     sql = builder.ToString();
                     using (SQLiteCommand cmd = new SQLiteCommand(sql, con))
                     {
+                        //Parâmetros
                         cmd.Parameters.AddWithValue("@logradouro", "Rua Bady Bassit");
                         cmd.Parameters.AddWithValue("@numero","657");
+                        //Abrindo a conexão
+                        con.Open();
+                        Console.WriteLine("Conexão aberta!");
+                        //Número de linhas afetadas pelo SQL
                         int linhas = cmd.ExecuteNonQuery();
+                        Console.ForegroundColor = ConsoleColor.Red;
                         Console.WriteLine(linhas + " linha(s) afetada(s)");
+                        Console.ResetColor();
+                        //Fechando a conexão
+                        con.Close();
+                        Console.WriteLine("Conexão fechada!");
                     }
-                    //Demonstração de Update
                     string numero = "666";
+                    //Demonstração de Update
                     Console.WriteLine("Atualizando o logradouro do número " + numero + ", pressione qualquer tecla para continuar...");
                     Console.ReadKey(true);
                     builder.Clear();
@@ -66,8 +83,16 @@ namespace ConsoleAppSQLite
                     using (SQLiteCommand cmd = new SQLiteCommand(sql, con))
                     {
                         cmd.Parameters.AddWithValue("@numero",numero);
+                        //Abrindo a conexão
+                        con.Open();
+                        Console.WriteLine("Conexão aberta!");
                         int linhas = cmd.ExecuteNonQuery();
+                        Console.ForegroundColor = ConsoleColor.Red;
                         Console.WriteLine(linhas + " linha(s) afetada(s)");
+                        Console.ResetColor();
+                        //Fechando a conexão
+                        con.Close();
+                        Console.WriteLine("Conexão fechada!");
                     }
                     //Demonstração de Delete
                     numero = "77";
@@ -79,22 +104,42 @@ namespace ConsoleAppSQLite
                     using (SQLiteCommand cmd = new SQLiteCommand(sql, con))
                     {
                         cmd.Parameters.AddWithValue("@numero", numero);
+                        //Abrindo a conexão
+                        con.Open();
+                        Console.WriteLine("Conexão aberta!");
                         int linhas = cmd.ExecuteNonQuery();
+                        Console.ForegroundColor = ConsoleColor.Red;
                         Console.WriteLine(linhas + " linha(s) afetada(s)");
+                        Console.ResetColor();
+                        //Fechando a conexão
+                        con.Close();
+                        Console.WriteLine("Conexão fechada!");
                     }
                     //Demonstração select
                     Console.WriteLine("Lendo todos os registros da tabela, pressione qualquer tecla para continuar...");
                     Console.ReadKey(true);
-                    sql = "SELECT * FROM Endereco;";
+                    sql = @"SELECT * FROM Endereco;";
                     using (SQLiteCommand cmd = new SQLiteCommand(sql, con))
                     {
+                        //Abrindo a conexão
+                        con.Open();
+                        Console.WriteLine("Conexão aberta!");
                         using (SQLiteDataReader reader = cmd.ExecuteReader())
                         {
+                            DataTable schemaTable = reader.GetSchemaTable();
                             while (reader.Read())
                             {
+                                Console.ForegroundColor = ConsoleColor.Yellow;
                                 Console.WriteLine("{0} {1} {2}", reader.GetInt32(0), reader.GetString(1), reader.GetString(2));
+                                Console.ResetColor();
                             }
+                            Console.ForegroundColor = ConsoleColor.Red;
+                            Console.WriteLine(reader.VisibleFieldCount + " registro(s) no banco de dados");
+                            Console.ResetColor();
                         }
+                        //Fechando a conexão
+                        con.Close();
+                        Console.WriteLine("Conexão fechada!");
                     }
                 }
             }
